@@ -1,0 +1,11 @@
+bin/*
+examples/cpp/client
+
+__pycache__
+*.pyc
+
+protofiles/build/*
+systeminfo_pb2.py
+protoc_middleman
+
+.vscode/settings.json
