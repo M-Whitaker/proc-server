@@ -1,11 +1,15 @@
 bin/*
+!bin/.gitkeep
+
 examples/cpp/client
 
 __pycache__
 *.pyc
 
 protofiles/build/*
+!CPPLINT.cfg
 systeminfo_pb2.py
 protoc_middleman
 
 .vscode/settings.json
+*.xml

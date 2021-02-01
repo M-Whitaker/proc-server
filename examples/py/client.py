@@ -1,29 +1,35 @@
-# An example script to send data with Google Protobuf over sockets
-# using Python.
+"""
+An example script to send data with Google Protobuf over sockets
+using Python.
+"""
 import socket  # for socket
 import sys  # For command line arguments
 from math import ceil
 import datetime
 
-import systeminfo_pb2  # Python interpretation of the systeminfo.proto file.
+# Python interpretation of the systeminfo.proto file.
+import systeminfo_pb2  # pyright: reportMissingImports=false
 
 PORT = 9909
 
+_USAGE = """
+Syntax: client.py
+        <ipaddress> [ipaddress] ...
+        <string> [message] ...
+        """
 
-def help():
+
+def usage():
     """
     Help function to print to explain the use of the script.
     """
-    print(
-        "An example script to send data with Google Protobuf over sockets using Python."
-    )
-    print(
-        "Expects at least one argument but no more than two. The first being the hostname"
-    )
-    print("and the second being the message to send to the server")
+    print(_USAGE)
 
 
-def ListAttributes(system_info):
+def list_attributes(system_info):
+    """
+    Lists the avaliable attributes to stdout.
+    """
     print("Uptime", datetime.timedelta(seconds=system_info.uptime))
     print("  Total RAM:", str(ceil(system_info.totalram / 1e+9)) + "GB")
 
@@ -32,29 +38,29 @@ def main(argc, argv):
     """
     Entry Point
     """
-    if (argc <= 3 and argc > 1):
+    if 1 < argc < 4:
         print("Connecting to socket at  %s:%d\n" % (argv[1], PORT))
-    elif (argc > 3):
+    elif argc > 3:
         print("Too many arguments supplied.\n")
-        help()
-        exit(-1)
+        usage()
+        sys.exit(-1)
     else:
         print("One argument expected.\n")
-        help()
-        exit(-1)
+        usage()
+        sys.exit(-1)
 
     try:
         msg = argv[2]
         msg = bytes(msg, encoding="utf-8")
-    except:
+    except TypeError:
         msg = b"This is a message from the client!"
 
     try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         print("Socket successfully created")
     except socket.error as err:
         print("socket creation failed with error %s" % err)
-        exit(-1)
+        sys.exit(-1)
 
     try:
         host_ip = socket.gethostbyname(argv[1])
@@ -62,20 +68,20 @@ def main(argc, argv):
 
         # this means could not resolve the host
         print("there was an error resolving the host")
-        exit(-1)
+        sys.exit(-1)
 
     # connecting to the server
     try:
-        s.connect((host_ip, PORT))
+        sock.connect((host_ip, PORT))
     except ConnectionRefusedError:
         print("ERROR *** Please start a server @ %s:%d" % (argv[1], PORT))
-        exit(-1)
+        sys.exit(-1)
 
     # sending the contents of the msg variable to the server.
-    s.sendall(msg)
+    sock.sendall(msg)
 
     # receiving up to 1024 bytes from the server.
-    data = s.recv(1024)
+    data = sock.recv(1024)
 
     print("Received: %s" % data.__repr__())
 
@@ -84,7 +90,7 @@ def main(argc, argv):
     system_info.ParseFromString(data)
 
     # displaying the output to console.
-    ListAttributes(system_info)
+    list_attributes(system_info)
 
 
 if __name__ == "__main__":

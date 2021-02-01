@@ -1,0 +1,17 @@
+services: docker
+matrix:
+  include:
+  # works on Precise and Trusty
+  - os: linux
+    arch: amd64
+
+before_install:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker build -t proc-server-image .
+  - docker run -d -it -v $(pwd):/tmp/proc-server -w /tmp/proc-server --name proc-server proc-server-image
+install:
+  - docker exec proc-server sh -c "make"
+script:
+  - docker exec proc-server sh -c "make test"
+after_script:
+  - docker rm proc-server

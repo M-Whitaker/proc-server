@@ -1,0 +1,4 @@
+yapf==0.30.0
+pylint==2.6.0
+pylint-junit==0.3.2
+protobuf==3.14.0

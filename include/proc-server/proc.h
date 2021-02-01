@@ -1,7 +1,7 @@
-#ifndef PROC_H
-#define PROC_H
+#ifndef INCLUDE_PROC_SERVER_PROC_H_
+#define INCLUDE_PROC_SERVER_PROC_H_
 
-#include "server.h"
+#include "proc-server/server.h"
 
 #ifdef __linux__
 #include <sys/sysinfo.h>
@@ -23,8 +23,9 @@
 
 namespace procserver {
 
-void get_system_info(procserver::SystemInfo *systeminfo, const char* sysInfoValues[], size_t sysInfoValuesLength);
+void get_system_info(procserver::SystemInfo *systeminfo,
+                      const char* sysInfoValues[], size_t sysInfoValuesLength);
 
-} // namespace procserver
+}  // namespace procserver
 
-#endif // PROC_H
+#endif  // INCLUDE_PROC_SERVER_PROC_H_
