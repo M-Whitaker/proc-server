@@ -37,6 +37,8 @@ clean:
 	-rm cpplint-junit.xml
 
 format:
+	./vendor/clang-format-all/clang-format-all $$(pwd)
+	clang-format -i protofiles/*.proto
 	yapf --style google --in-place -vv examples/py/client.py
 	
 lint:

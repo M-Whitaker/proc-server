@@ -1,10 +1,10 @@
 #include "proc-server/server.h"
 
-#include <unistd.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #include <ctime>
 #include <iostream>
@@ -15,16 +15,15 @@ namespace procserver {
 
 #define PORT 9909
 
-void SetSystemInfoDetails(procserver::SystemInfo *systeminfo) {
+void SetSystemInfoDetails(procserver::SystemInfo* systeminfo) {
   const char* sysctlvalues[] = {SYS_UPTIME, SYS_RAMSIZE, SYS_LOADAVG};
   get_system_info(systeminfo, sysctlvalues,
-                   sizeof(sysctlvalues) / sizeof(sysctlvalues[0]));
+                  sizeof(sysctlvalues) / sizeof(sysctlvalues[0]));
 }
-
 
 }  // namespace procserver
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const* argv[]) {
   // Verify that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -35,8 +34,7 @@ int main(int argc, char const *argv[]) {
   struct sockaddr_in socket_address;
   int opt = 1;
   int addrlen = sizeof(socket_address);
-  const char *hello = "Hello from server";
-
+  const char* hello = "Hello from server";
 
   // Creating socket file descriptor
   if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -54,8 +52,8 @@ int main(int argc, char const *argv[]) {
   socket_address.sin_port = htons(PORT);
 
   // Forcefully attaching socket to the port
-  if (bind(server_fd,  reinterpret_cast<struct sockaddr *>(&socket_address),
-                        sizeof(socket_address)) < 0) {
+  if (bind(server_fd, reinterpret_cast<struct sockaddr*>(&socket_address),
+           sizeof(socket_address)) < 0) {
     perror("bind failed");
     exit(EXIT_FAILURE);
   }
@@ -64,13 +62,13 @@ int main(int argc, char const *argv[]) {
     exit(EXIT_FAILURE);
   }
   while (1) {
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&socket_address,
-                            reinterpret_cast<socklen_t*>(&addrlen))) < 0) {
-        perror("accept");
-        exit(EXIT_FAILURE);
+    if ((new_socket = accept(server_fd, (struct sockaddr*)&socket_address,
+                             reinterpret_cast<socklen_t*>(&addrlen))) < 0) {
+      perror("accept");
+      exit(EXIT_FAILURE);
     }
     char buffer[1024] = {0};
-    valread = read(new_socket , buffer, 1024);
+    valread = read(new_socket, buffer, 1024);
     printf("[*] CLIENT | %s\n", buffer);
 
     // Add an details.
@@ -83,8 +81,8 @@ int main(int argc, char const *argv[]) {
 
     // Sending data to client
     if ((send(new_socket, bts, sizeof(bts), 0)) < 0) {
-        perror("send");
-        exit(EXIT_FAILURE);
+      perror("send");
+      exit(EXIT_FAILURE);
     }
     printf("[*] SERVER | TCP Packets sent\n");
     close(new_socket);

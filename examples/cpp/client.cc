@@ -1,15 +1,15 @@
 // Client side C++ program to demonstrate Socket programming
-// TODO: Display protobuf output.
-#include <sys/socket.h>
+// TODO(M-Whitaker): Display protobuf output.
 #include <arpa/inet.h>
-#include <unistd.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #include <iostream>
 
 #define PORT 9909
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const* argv[]) {
   if (argc == 2) {
     printf("Connecting to socket at  %s:%d\n", argv[1], PORT);
   } else if (argc > 2) {
@@ -21,7 +21,7 @@ int main(int argc, char const *argv[]) {
   }
   int sock = 0, valread;
   struct sockaddr_in serv_addr;
-  const char *hello = "This is a message from the client!";
+  const char* hello = "This is a message from the client!";
   char buffer[1024] = {0};
   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
     printf("\n Socket creation error \n");
@@ -37,7 +37,7 @@ int main(int argc, char const *argv[]) {
     return -1;
   }
 
-  if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
+  if (connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
     printf("\n Connection Failed \n");
     return -1;
   }

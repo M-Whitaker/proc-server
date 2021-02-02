@@ -10,5 +10,4 @@ message SystemInfo {
   int32 uptime = 1;
   repeated int32 loads = 2;
   int64 totalram = 3;
-
 }

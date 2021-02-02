@@ -1,22 +1,22 @@
 #include "proc-server/proc.h"
 
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <iostream>
 
 #ifdef __APPLE__
-#include <sys/types.h>
 #include <sys/sysctl.h>
 #include <sys/time.h>
+#include <sys/types.h>
 #endif
 
 namespace procserver {
 
 #ifdef __linux__
-void get_system_info(procserver::SystemInfo *systeminfo,
-                      const char* sysInfoValues[], size_t sysInfoValuesLength) {
+void get_system_info(procserver::SystemInfo* systeminfo,
+                     const char* sysInfoValues[], size_t sysInfoValuesLength) {
   struct sysinfo sys_info;
   if (sysinfo(&sys_info) != 0) {
     perror("sysinfo");
@@ -31,8 +31,8 @@ void get_system_info(procserver::SystemInfo *systeminfo,
 #endif
 
 #ifdef __APPLE__
-void get_system_info(procserver::SystemInfo *systeminfo,
-                      const char* sysInfoValues[], size_t sysInfoValuesLength) {
+void get_system_info(procserver::SystemInfo* systeminfo,
+                     const char* sysInfoValues[], size_t sysInfoValuesLength) {
   for (size_t i = 0; i < sysInfoValuesLength; i++) {
     printf("Getting value for %s...\n", sysInfoValues[i]);
 
@@ -40,25 +40,25 @@ void get_system_info(procserver::SystemInfo *systeminfo,
     sysctlbyname(sysInfoValues[i], NULL, &size, NULL, 0);
 
     if (strcmp(sysInfoValues[i], "kern.boottime") == 0) {
-        int64_t *buffer = reinterpret_cast<int64_t*>(malloc(size));
-        sysctlbyname(sysInfoValues[i], buffer, &size, NULL, 0);
-        time_t curr_time;
-        time(&curr_time);
-        printf("%lld\n", curr_time - *buffer);
-        systeminfo->set_uptime(curr_time - *buffer);
-        free(buffer);
+      int64_t* buffer = reinterpret_cast<int64_t*>(malloc(size));
+      sysctlbyname(sysInfoValues[i], buffer, &size, NULL, 0);
+      time_t curr_time;
+      time(&curr_time);
+      printf("%lld\n", curr_time - *buffer);
+      systeminfo->set_uptime(curr_time - *buffer);
+      free(buffer);
     } else if (strcmp(sysInfoValues[i], "vm.loadavg") == 0) {
-        struct loadavg *buffer = (struct loadavg*)malloc(size);
-        sysctlbyname(sysInfoValues[i], buffer, &size, NULL, 0);
-        printf("{%u %u %u}\n",
-                buffer->ldavg[0], buffer->ldavg[1], buffer->ldavg[2]);
-        free(buffer);
+      struct loadavg* buffer = (struct loadavg*)malloc(size);
+      sysctlbyname(sysInfoValues[i], buffer, &size, NULL, 0);
+      printf("{%u %u %u}\n", buffer->ldavg[0], buffer->ldavg[1],
+             buffer->ldavg[2]);
+      free(buffer);
     } else {
-        int64_t *buffer = reinterpret_cast<int64_t*>(malloc(size));
-        sysctlbyname(sysInfoValues[i], buffer, &size, NULL, 0);
-        printf("%lld\n", *buffer);
-        systeminfo->set_totalram(*buffer);
-        free(buffer);
+      int64_t* buffer = reinterpret_cast<int64_t*>(malloc(size));
+      sysctlbyname(sysInfoValues[i], buffer, &size, NULL, 0);
+      printf("%lld\n", *buffer);
+      systeminfo->set_totalram(*buffer);
+      free(buffer);
     }
   }
 }

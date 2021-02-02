@@ -4,10 +4,9 @@
 #include "proc-server/server.h"
 
 #ifdef __linux__
-#include <sys/sysinfo.h>
 #include <errno.h>
+#include <sys/sysinfo.h>
 #endif
-
 
 #ifdef __linux__
 #define SYS_UPTIME "uptime"
@@ -23,8 +22,8 @@
 
 namespace procserver {
 
-void get_system_info(procserver::SystemInfo *systeminfo,
-                      const char* sysInfoValues[], size_t sysInfoValuesLength);
+void get_system_info(procserver::SystemInfo* systeminfo,
+                     const char* sysInfoValues[], size_t sysInfoValuesLength);
 
 }  // namespace procserver
 

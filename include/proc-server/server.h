@@ -5,7 +5,7 @@
 
 namespace procserver {
 
-void SetSystemInfoDetails(procserver::SystemInfo *systeminfo);
+void SetSystemInfoDetails(procserver::SystemInfo* systeminfo);
 
 }  // namespace procserver
 
